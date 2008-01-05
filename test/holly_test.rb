@@ -5,44 +5,40 @@ require File.dirname(__FILE__) + '/../../../../config/environment'
 
 class HollyTest < Test::Unit::TestCase
   
-  def test_source_conversion
-    [
-      'prototype',
-      'prototype.js',
-      'prototype.js?1199484190',
-      '/javascripts/prototype.js?1199484190',
-      '/javascripts/prototype',
-      '/javascripts/prototype.js'
-    ].each do |source|
-      assert_equal '/javascripts/prototype.js', Holly.resolve_source(source)
+  def test_javascript_paths
+    {
+      'prototype'                       => '/javascripts/prototype.js',
+      'prototype.js'                    => '/javascripts/prototype.js',
+      'prototype.js?34737'              => '/javascripts/prototype.js',
+      '/prototype'                      => '/prototype.js',
+      '/prototype.js'                   => '/prototype.js',
+      '/prototype.rb'                   => '/prototype.rb',
+      '/stylesheets/style'              => '/stylesheets/style.css',
+      '/stylesheets/style.css'          => '/stylesheets/style.css',
+      '/stylesheets/style.js'           => '/stylesheets/style.js',
+      'http://svn.jcoglan.com/foo'      => 'http://svn.jcoglan.com/foo.js',
+      'http://svn.jcoglan.com/foo.css'  => 'http://svn.jcoglan.com/foo.css'
+    }.each do |source, path|
+      assert_equal path, Holly.resolve_source(source, "js")
     end
-    
-    assert_equal '/prototype.js', Holly.resolve_source('/prototype')
-    
-    [
-      'http://svn.jcoglan.com/something.js',
-      'http://svn.jcoglan.com/something'
-    ].each do |source|
-      assert_equal 'http://svn.jcoglan.com/something.js', Holly.resolve_source(source)
+  end
+  
+  def test_stylesheet_paths
+    {
+      'style'                           => '/stylesheets/style.css',
+      'style.css'                       => '/stylesheets/style.css',
+      'style.css?34737'                 => '/stylesheets/style.css',
+      '/style'                          => '/style.css',
+      '/style.css'                      => '/style.css',
+      '/style.rb'                       => '/style.rb',
+      '/javascripts/script'             => '/javascripts/script.js',
+      '/javascripts/script.css'         => '/javascripts/script.css',
+      '/javascripts/script.js'          => '/javascripts/script.js',
+      'http://svn.jcoglan.com/foo'      => 'http://svn.jcoglan.com/foo.css',
+      'http://svn.jcoglan.com/foo.js'   => 'http://svn.jcoglan.com/foo.js'
+    }.each do |source, path|
+      assert_equal path, Holly.resolve_source(source, "css")
     end
-    
-    assert_equal 'http://svn.jcoglan.com/something.js?id=foo.js',
-        Holly.resolve_source('http://svn.jcoglan.com/something.js?id=foo')
-    
-    [
-      'style.css',
-      '/stylesheets/style',
-      'style.css?3457356',
-      '/stylesheets/style?735746',
-      '/stylesheets/style.css?735746'
-    ].each do |source|
-      assert_equal '/stylesheets/style.css', Holly.resolve_source(source)
-    end
-    
-    assert_equal '/javascripts/style.css', Holly.resolve_source('/javascripts/style', 'css')
-    assert_equal '/javascripts/style.js', Holly.resolve_source('/javascripts/style')
-    assert_equal '/stylesheets/script.js', Holly.resolve_source('/stylesheets/script', 'js')
-    assert_equal '/stylesheets/script.css', Holly.resolve_source('/stylesheets/script')
   end
   
   def test_logger

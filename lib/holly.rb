@@ -4,10 +4,10 @@ module Holly
   JS_DIR = "javascripts"
   CSS_DIR = "stylesheets"
   
-  def self.resolve_source(source, extension = nil)
+  def self.resolve_source(source, context = "js")
     source = source.to_s
-    source.gsub!(/\?.*$/, "") unless is_remote_path?(source)
-    extension = determine_extension(source, extension)
+    source = source.gsub(/\?.*$/, "") unless is_remote_path?(source)
+    extension = determine_extension(source, context)
     source += ".#{extension}" unless source =~ /\.[a-z]+$/i
     unless is_absolute_path?(source) or is_remote_path?(source)
       source = "/#{source =~ /\.css$/i ? CSS_DIR : JS_DIR}/#{source}"
@@ -23,11 +23,12 @@ module Holly
     !!(path =~ /^https?:\/\//i)
   end
   
-  def self.determine_extension(source, extension = nil)
+  def self.determine_extension(source, context = "js")
+    return source.gsub(/^.*?\.([a-z]+)$/i, '\1') if source =~ /\.[a-z]+$/i
     if is_absolute_path?(source)
-      extension ||= "js" if source =~ %r{\/#{JS_DIR}\/}
-      extension ||= "css" if source =~ %r{\/#{CSS_DIR}\/}
+      return "js" if source =~ %r{\/#{JS_DIR}\/}
+      return "css" if source =~ %r{\/#{CSS_DIR}\/}
     end
-    extension || "js"
+    return context
   end
 end
