@@ -14,20 +14,35 @@ class HollyTest < Test::Unit::TestCase
       '/javascripts/prototype',
       '/javascripts/prototype.js'
     ].each do |source|
-      assert_equal '/javascripts/prototype.js', Holly::Asset.new(source).source
+      assert_equal '/javascripts/prototype.js', Holly.resolve_source(source)
     end
     
-    assert_equal '/prototype.js', Holly::Asset.new('/prototype').source
+    assert_equal '/prototype.js', Holly.resolve_source('/prototype')
     
     [
       'http://svn.jcoglan.com/something.js',
       'http://svn.jcoglan.com/something'
     ].each do |source|
-      assert_equal 'http://svn.jcoglan.com/something.js', Holly::Asset.new(source).source
+      assert_equal 'http://svn.jcoglan.com/something.js', Holly.resolve_source(source)
     end
     
-    assert_equal('http://svn.jcoglan.com/something.js?id=foo.js',
-        Holly::Asset.new('http://svn.jcoglan.com/something.js?id=foo').source)
+    assert_equal 'http://svn.jcoglan.com/something.js?id=foo.js',
+        Holly.resolve_source('http://svn.jcoglan.com/something.js?id=foo')
+    
+    [
+      'style.css',
+      '/stylesheets/style',
+      'style.css?3457356',
+      '/stylesheets/style?735746',
+      '/stylesheets/style.css?735746'
+    ].each do |source|
+      assert_equal '/stylesheets/style.css', Holly.resolve_source(source)
+    end
+    
+    assert_equal '/javascripts/style.css', Holly.resolve_source('/javascripts/style', 'css')
+    assert_equal '/javascripts/style.js', Holly.resolve_source('/javascripts/style')
+    assert_equal '/stylesheets/script.js', Holly.resolve_source('/stylesheets/script', 'js')
+    assert_equal '/stylesheets/script.css', Holly.resolve_source('/stylesheets/script')
   end
   
   def test_logger

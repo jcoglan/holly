@@ -3,7 +3,7 @@ module Holly
     class Collection
       
       def initialize(*sources)
-        @sources = sources.map { |s| Asset.convert_source(s) }.uniq
+        @sources = sources.map { |s| Holly.resolve_source(s) }.uniq
         @files = @sources.map { |s| Asset.new(s) }
         expand!
       end

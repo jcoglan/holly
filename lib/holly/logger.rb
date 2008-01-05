@@ -8,12 +8,12 @@ module Holly
     end
     
     def log(*sources)
-      sources = sources.map { |s| Asset.convert_source(s) }
+      sources = sources.map { |s| Holly.resolve_source(s) }
       @sources = (@sources + sources).uniq
     end
     
     def rendered?(source)
-      @sources.include?(Asset.convert_source(source))
+      @sources.include?(Holly.resolve_source(source))
     end
     
   end
