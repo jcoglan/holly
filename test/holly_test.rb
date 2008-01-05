@@ -64,10 +64,11 @@ class HollyTest < Test::Unit::TestCase
       '/javascripts/dragdrop.js'
     ]
     assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop').to_a
+    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop', 'dragdrop').to_a
     assert_equal scripts, Holly::ScriptFile::Collection.new('/javascripts/dragdrop.js').to_a
     assert_equal scripts, Holly::ScriptFile::Collection.new('prototype', 'dragdrop').to_a
     assert_equal scripts, Holly::ScriptFile::Collection.new('effects').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop', 'prototype', 'effects').to_a
+    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop', '/javascipts/prototype', 'effects').to_a
     assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop', 'effects').to_a
     assert_equal scripts, Holly::ScriptFile::Collection.new('effects', 'prototype').to_a
   end
