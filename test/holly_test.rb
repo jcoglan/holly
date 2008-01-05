@@ -26,4 +26,11 @@ class HollyTest < Test::Unit::TestCase
     assert_equal('http://svn.jcoglan.com/something.js?id=foo.js',
         Holly::ScriptFile.new('http://svn.jcoglan.com/something.js?id=foo').source)
   end
+  
+  def test_logger
+    log = Holly::Logger.new
+    log.log('prototype.js?1199484190', '/javascripts/prototype')
+    assert log.rendered?('/javascripts/prototype.js')
+    assert_equal 1, log.sources.size
+  end
 end
