@@ -1,3 +1,5 @@
+$holly_test_path = File.dirname(__FILE__) + '/assets'
+
 require 'test/unit'
 require File.dirname(__FILE__) + '/../../../../config/environment'
 
