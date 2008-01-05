@@ -5,7 +5,8 @@ module Holly
       def convert_source(source)
         source = source.to_s
         source = "/javascripts/#{source}" unless is_remote?(source) or is_absolute?(source)
-        source
+        source.gsub!(/\?.*$/, "") if !is_remote?(source)
+        source.gsub(/\.js$/i, "") + ".js"
       end
       
       def is_remote?(source)
@@ -21,8 +22,6 @@ module Holly
     
     def initialize(source)
       @source = self.class.convert_source(source) # will be absolute or remote
-      @source.gsub!(/\?.*$/, "") if is_local?
-      @source = @source.gsub(/\.js$/i, "") + ".js"
     end
     
     def is_local?
