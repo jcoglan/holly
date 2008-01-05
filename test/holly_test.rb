@@ -2,6 +2,7 @@ require 'test/unit'
 require File.dirname(__FILE__) + '/../../../../config/environment'
 
 class HollyTest < Test::Unit::TestCase
+  
   def test_source_conversion
     [
       'prototype',
@@ -32,5 +33,24 @@ class HollyTest < Test::Unit::TestCase
     log.log('prototype.js?1199484190', '/javascripts/prototype')
     assert log.rendered?('/javascripts/prototype.js')
     assert_equal 1, log.sources.size
+  end
+  
+  def test_requires
+    assert Holly::ScriptFile.new("prototype").requires.empty?
+    effects = Holly::ScriptFile.new("effects")
+    assert_equal 2, effects.requires.size
+    assert_equal '/javascripts/prototype.js', effects.requires[0]
+    assert_equal 'http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js', effects.requires[1]
+    dragdrop = Holly::ScriptFile.new("dragdrop")
+    assert_equal 1, dragdrop.requires.size
+    assert_equal '/javascripts/effects.js', dragdrop.requires[0]
+  end
+  
+  def test_loads
+    assert Holly::ScriptFile.new("prototype").loads.empty?
+    assert Holly::ScriptFile.new("dragdrop").loads.empty?
+    effects = Holly::ScriptFile.new("effects")
+    assert_equal 1, effects.loads.size
+    assert_equal '/javascripts/dragdrop.js', effects.loads[0]
   end
 end
