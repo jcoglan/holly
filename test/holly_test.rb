@@ -55,4 +55,17 @@ class HollyTest < Test::Unit::TestCase
     assert_equal 1, effects.loads.size
     assert_equal '/javascripts/dragdrop.js', effects.loads[0]
   end
+  
+  def test_expanding
+    scripts = [
+      '/javascripts/prototype.js',
+      'http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js',
+      '/javascripts/effects.js',
+      '/javascripts/dragdrop.js'
+    ]
+    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop').to_a
+    assert_equal scripts, Holly::ScriptFile::Collection.new('/javascripts/dragdrop.js').to_a
+    assert_equal scripts, Holly::ScriptFile::Collection.new('prototype', 'dragdrop').to_a
+    assert_equal scripts, Holly::ScriptFile::Collection.new('effects').to_a
+  end
 end
