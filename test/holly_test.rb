@@ -14,20 +14,20 @@ class HollyTest < Test::Unit::TestCase
       '/javascripts/prototype',
       '/javascripts/prototype.js'
     ].each do |source|
-      assert_equal '/javascripts/prototype.js', Holly::ScriptFile.new(source).source
+      assert_equal '/javascripts/prototype.js', Holly::Asset.new(source).source
     end
     
-    assert_equal '/prototype.js', Holly::ScriptFile.new('/prototype').source
+    assert_equal '/prototype.js', Holly::Asset.new('/prototype').source
     
     [
       'http://svn.jcoglan.com/something.js',
       'http://svn.jcoglan.com/something'
     ].each do |source|
-      assert_equal 'http://svn.jcoglan.com/something.js', Holly::ScriptFile.new(source).source
+      assert_equal 'http://svn.jcoglan.com/something.js', Holly::Asset.new(source).source
     end
     
     assert_equal('http://svn.jcoglan.com/something.js?id=foo.js',
-        Holly::ScriptFile.new('http://svn.jcoglan.com/something.js?id=foo').source)
+        Holly::Asset.new('http://svn.jcoglan.com/something.js?id=foo').source)
   end
   
   def test_logger
@@ -38,20 +38,20 @@ class HollyTest < Test::Unit::TestCase
   end
   
   def test_requires
-    assert Holly::ScriptFile.new("prototype").requires.empty?
-    effects = Holly::ScriptFile.new("effects")
+    assert Holly::Asset.new("prototype").requires.empty?
+    effects = Holly::Asset.new("effects")
     assert_equal 2, effects.requires.size
     assert_equal '/javascripts/prototype.js', effects.requires[0]
     assert_equal 'http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js', effects.requires[1]
-    dragdrop = Holly::ScriptFile.new("dragdrop")
+    dragdrop = Holly::Asset.new("dragdrop")
     assert_equal 1, dragdrop.requires.size
     assert_equal '/javascripts/effects.js', dragdrop.requires[0]
   end
   
   def test_loads
-    assert Holly::ScriptFile.new("prototype").loads.empty?
-    assert Holly::ScriptFile.new("dragdrop").loads.empty?
-    effects = Holly::ScriptFile.new("effects")
+    assert Holly::Asset.new("prototype").loads.empty?
+    assert Holly::Asset.new("dragdrop").loads.empty?
+    effects = Holly::Asset.new("effects")
     assert_equal 1, effects.loads.size
     assert_equal '/javascripts/dragdrop.js', effects.loads[0]
   end
@@ -63,13 +63,13 @@ class HollyTest < Test::Unit::TestCase
       '/javascripts/effects.js',
       '/javascripts/dragdrop.js'
     ]
-    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop', 'dragdrop.js').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('/javascripts/dragdrop.js').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('prototype', 'dragdrop').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('effects').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop', '/javascripts/prototype', 'effects').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('dragdrop', 'effects').to_a
-    assert_equal scripts, Holly::ScriptFile::Collection.new('effects', 'prototype').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', 'dragdrop.js').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('/javascripts/dragdrop.js').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('prototype', 'dragdrop').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('effects').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', '/javascripts/prototype', 'effects').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', 'effects').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('effects', 'prototype').to_a
   end
 end

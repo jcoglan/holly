@@ -1,10 +1,10 @@
 module Holly
-  class ScriptFile
+  class Asset
     class Collection
       
       def initialize(*sources)
-        @sources = sources.map { |s| ScriptFile.convert_source(s) }.uniq
-        @files = @sources.map { |s| ScriptFile.new(s) }
+        @sources = sources.map { |s| Asset.convert_source(s) }.uniq
+        @files = @sources.map { |s| Asset.new(s) }
         expand!
       end
       
@@ -12,7 +12,7 @@ module Holly
         n = @files.size
         while true
           @sources = @files.map { |f| f.requires + [f.source] + f.loads }.flatten.uniq
-          @files = @sources.map { |s| ScriptFile.new(s) }
+          @files = @sources.map { |s| Asset.new(s) }
           return if n == @files.size
           n = @files.size
         end

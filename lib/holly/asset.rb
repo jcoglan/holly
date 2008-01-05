@@ -1,5 +1,5 @@
 module Holly
-  class ScriptFile
+  class Asset
     
     REQUIRE = /^\s*\/\/\s*@require\s+/
     LOAD = /^\s*\/\/\s*@load\s+/
