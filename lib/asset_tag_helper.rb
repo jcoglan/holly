@@ -3,13 +3,25 @@ module ActionView
     module AssetTagHelper
       
       def javascript_include_tag_with_holly(*sources)
-        @holly_logger ||= Holly::Logger.new
-        sources = Holly::Asset::Collection.new(*sources).to_a.
-            delete_if { |s| @holly_logger.rendered?(s) }
-        @holly_logger.log(*sources)
-        javascript_include_tag_without_holly(*sources)
+        holly_asset_tags(sources, "js")
       end
       alias_method_chain(:javascript_include_tag, :holly)
+      
+      def stylesheet_link_tag_with_holly(*sources)
+        holly_asset_tags(sources, "css")
+      end
+      alias_method_chain(:stylesheet_link_tag, :holly)
+      
+      def holly_asset_tags(sources, asset_type)
+        @holly_logger ||= Holly::Logger.new
+        sources = sources.map { |s| Holly.resolve_source(s.to_s, asset_type) }
+        files = Holly::Asset::Collection.new(*sources).files
+        files.delete_if { |f| @holly_logger.rendered?(f.source) }
+        @holly_logger.log(*files.map { |f| f.source})
+        files.map { |file|
+          __send__("#{file.asset_tag_method}_without_holly", file.source)
+        }.join("\n")
+      end
       
     end
   end

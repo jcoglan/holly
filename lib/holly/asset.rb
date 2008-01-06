@@ -4,7 +4,7 @@ module Holly
     REQUIRE = /^\s*(?:\/\/|\/\*)\s*@require\s+(\S+)/
     LOAD = /^\s*(?:\/\/|\/\*)\s*@load\s+(\S+)/
     
-    attr :source
+    attr_accessor :source
     
     def initialize(source)
       @source = Holly.resolve_source(source)
@@ -20,6 +20,10 @@ module Holly
     
     def asset_type
       @source.match(/\.([a-z]+)$/i).to_a[1]
+    end
+    
+    def asset_tag_method
+      asset_type == "css" ? :stylesheet_link_tag : :javascript_include_tag
     end
     
     def read

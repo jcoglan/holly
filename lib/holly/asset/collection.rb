@@ -2,6 +2,8 @@ module Holly
   class Asset
     class Collection
       
+      attr_accessor :sources, :files
+      
       def initialize(*sources)
         @sources = sources.map { |s| Holly.resolve_source(s) }.uniq
         @files = @sources.map { |s| Asset.new(s) }
@@ -16,10 +18,6 @@ module Holly
           return if n == @files.size
           n = @files.size
         end
-      end
-      
-      def to_a
-        @files.map { |f| f.source }
       end
       
     end

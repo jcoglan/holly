@@ -62,14 +62,26 @@ class HollyTest < Test::Unit::TestCase
       '/javascripts/effects.js',
       '/javascripts/dragdrop.js'
     ]
-    assert_equal scripts, Holly::Asset::Collection.new('dragdrop').to_a
-    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', 'dragdrop.js').to_a
-    assert_equal scripts, Holly::Asset::Collection.new('/javascripts/dragdrop.js').to_a
-    assert_equal scripts, Holly::Asset::Collection.new('prototype', 'dragdrop').to_a
-    assert_equal scripts, Holly::Asset::Collection.new('effects').to_a
-    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', '/javascripts/prototype', 'effects').to_a
-    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', 'effects').to_a
-    assert_equal scripts, Holly::Asset::Collection.new('effects', 'prototype').to_a
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop').sources
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', 'dragdrop.js').sources
+    assert_equal scripts, Holly::Asset::Collection.new('/javascripts/dragdrop.js').sources
+    assert_equal scripts, Holly::Asset::Collection.new('prototype', 'dragdrop').sources
+    assert_equal scripts, Holly::Asset::Collection.new('effects').sources
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', '/javascripts/prototype', 'effects').sources
+    assert_equal scripts, Holly::Asset::Collection.new('dragdrop', 'effects').sources
+    assert_equal scripts, Holly::Asset::Collection.new('effects', 'prototype').sources
+    
+    widget = [
+      '/javascripts/prototype.js',
+      'http://yui.yahooapis.com/2.4.1/build/yahoo-dom-event/yahoo-dom-event.js',
+      '/javascripts/effects.js',
+      '/javascripts/dragdrop.js',
+      '/widget.js',
+      '/widget/item.js',
+      '/stylesheets/widget.css'
+    ]
+    
+    assert_equal widget, Holly::Asset::Collection.new('/widget.js').sources
   end
   
   def test_logger
