@@ -2,22 +2,32 @@ module Holly
   class Asset
     class Collection
       
-      attr_accessor :sources, :files
+      attr_accessor :sources
       
       def initialize(*sources)
         @sources = sources.map { |s| Holly.resolve_source(s) }.uniq
-        @files = @sources.map { |s| Asset.new(s) }
         expand!
       end
       
       def expand!
-        n = @files.size
+        n = @sources.size
         while true
-          @sources = @files.map { |f| f.requires + [f.source] + f.loads }.flatten.uniq
-          @files = @sources.map { |s| Asset.new(s) }
-          return if n == @files.size
-          n = @files.size
+          tmp = []
+          # Expand files in reverse order. @load-ed files are not reloaded if tmp
+          # already contains them, so files are loaded as late as possible.
+          # @require-d files are bumped as early in the list as they are needed.
+          files.reverse.each do |file|
+            tmp = (file.requires + [file.source] +
+                file.loads.delete_if { |f| tmp.include?(f) } + tmp).flatten.uniq
+          end
+          @sources = tmp
+          return if n == @sources.size
+          n = @sources.size
         end
+      end
+      
+      def files
+        @sources.map { |s| Asset.new(s) }
       end
       
     end

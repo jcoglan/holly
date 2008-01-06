@@ -84,6 +84,21 @@ class HollyTest < Test::Unit::TestCase
     assert_equal widget, Holly::Asset::Collection.new('/widget.js').sources
   end
   
+  def test_ordering
+    assert_equal [
+      '/stylesheets/gallery/item.css',
+      '/stylesheets/foo.css'
+    ], Holly::Asset::Collection.new('foo.css').sources
+    
+    assert_equal [
+      '/stylesheets/bar.css',
+      '/stylesheets/gallery.css',
+      '/stylesheets/gallery/item.css',
+      '/stylesheets/gallery/container.css',
+      '/stylesheets/gallery/page.css'
+    ], Holly::Asset::Collection.new('bar.css').sources
+  end
+  
   def test_logger
     log = Holly::Logger.new
     log.log('prototype.js?1199484190', '/javascripts/prototype')

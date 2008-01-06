@@ -36,10 +36,12 @@ module Holly
     
     def requires
       @requires ||= parse(REQUIRE)
+      @requires.dup
     end
     
     def loads
       @loads ||= parse(LOAD)
+      @loads.dup
     end
     
   private
