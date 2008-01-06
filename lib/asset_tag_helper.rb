@@ -3,12 +3,12 @@ module ActionView
     module AssetTagHelper
       
       def javascript_include_tag_with_holly(*sources)
-        holly_asset_tags(sources, "js")
+        holly_asset_tags(expand_javascript_sources(sources), "js")
       end
       alias_method_chain(:javascript_include_tag, :holly)
       
       def stylesheet_link_tag_with_holly(*sources)
-        holly_asset_tags(sources, "css")
+        holly_asset_tags(expand_stylesheet_sources(sources), "css")
       end
       alias_method_chain(:stylesheet_link_tag, :holly)
       
