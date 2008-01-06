@@ -1,0 +1,11 @@
+// @require prototype
+// @require prototype.js
+// @require prototype.js?34737
+// @require /prototype
+// @require /prototype.js
+// @require /prototype.rb
+// @require /stylesheets/style
+// @require /stylesheets/style.css
+// @require /stylesheets/style.js
+// @require http://svn.jcoglan.com/foo
+// @require http://svn.jcoglan.com/foo.css

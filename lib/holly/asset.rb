@@ -1,13 +1,13 @@
 module Holly
   class Asset
     
-    REQUIRE = /^\s*\/\/\s*@require\s+/
-    LOAD = /^\s*\/\/\s*@load\s+/
+    REQUIRE = /^\s*(?:\/\/|\/\*)\s*@require\s+(\S+)/
+    LOAD = /^\s*(?:\/\/|\/\*)\s*@load\s+(\S+)/
     
     attr :source
     
     def initialize(source)
-      @source = Holly.resolve_source(source) # will be absolute or remote
+      @source = Holly.resolve_source(source)
     end
     
     def is_local?
@@ -16,6 +16,10 @@ module Holly
     
     def path
       is_local? ? "#{PUBLIC_DIR}#{@source}" : @source
+    end
+    
+    def asset_type
+      @source.match(/\.([a-z]+)$/i).to_a[1]
     end
     
     def read
@@ -27,17 +31,20 @@ module Holly
     end
     
     def requires
-      @requires ||= lines.
-          find_all { |line| line =~ REQUIRE }.
-          map { |line| line.strip.gsub(REQUIRE, "") }.
-          map { |s| Holly.resolve_source(s) }
+      @requires ||= parse(REQUIRE)
     end
     
     def loads
-      @loads ||= lines.
-          find_all { |line| line =~ LOAD }.
-          map { |line| line.strip.gsub(LOAD, "") }.
-          map { |s| Holly.resolve_source(s) }
+      @loads ||= parse(LOAD)
+    end
+    
+  private
+    
+    def parse(pattern)
+      lines.
+          map { |l| l.match(pattern).to_a[1] }.
+          delete_if { |s| s.to_s == "" }.
+          map { |s| Holly.resolve_source(s, asset_type) }
     end
     
   end
