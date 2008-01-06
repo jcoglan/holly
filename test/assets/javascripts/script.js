@@ -1,6 +1,8 @@
 // @require prototype
 // @require prototype.js
 // @require prototype.js?34737
+// @require widget/item.js
+// @require widget/style.css
 // @require /prototype
 // @require /prototype.js
 // @require /prototype.rb

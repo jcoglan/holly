@@ -1,13 +1,95 @@
-Holly
-=====
+== Holly
 
-Introduction goes here.
-
-
-Example
-=======
-
-Example goes here.
-
+Holly is an automated dependency manager for JavaScript and CSS assets in Ruby on Rails
+projects. Its name is 'Holly', as in 'the holly and the ivy', Ivy being a Java-based
+dependency manager. It was begun just after Christmas and I had to call it _something_.
 
 Copyright (c) 2008 James Coglan, released under the MIT license
+
+=== The problem
+
+You're building part of your site, which has a little bit of script on the page. Something
+to the effect of:
+
+  var myWidget = new Widget('elementID');
+
+To implement that, you know you need to include the .js file for +Widget+, so you put this
+in the document's head:
+
+  <%= javascript_include_tag 'widget' %>
+
+What you don't know (and what I don't think you should need to know) is that +Widget+
+uses <tt>dragdrop.js</tt>, which itself relies on <tt>effects.js</tt>, which again relies on
+<tt>prototype.js</tt>. Holly allows each script/css file to declare its dependencies using
+special comments. Whenever you use +javascript_include_tag+ or +stylesheet_link_tag+,
+Holly examines the file's dependencies and makes sure they are included into your HTML,
+in the correct order and without duplication. This allows all script files to make sure
+they will run properly when loaded, and to load additional script files and stylesheets
+without the template author needing to know which files to add to the page.
+
+=== How to use
+
+Let's say our +Widget+ class lives in <tt>widget.js</tt>. It has two other classes it uses;
+<tt>Widget.Item</tt> in <tt>widget/item.js</tt> and <tt>Widget.Page</tt> in
+<tt>widget/page.js</tt>. These classes should be loaded after +Widget+. It needs
+<tt>dragdrop.js</tt> to be loaded first, and it also has a stylesheet associated with it,
+called <tt>widget.css</tt>. Add the following lines to the top of <tt>widget.js</tt>:
+
+  // @require dragdrop
+  // @load widget/item
+  // @load widget/page
+  // @load widget.css
+
+<tt>dragdrop.js</tt> has it own dependencies. Add this line to <tt>dragdrop.js</tt>:
+
+  // @require effects
+
+and this line to <tt>effects.js</tt>:
+
+  // @require prototype
+
+You can also use <tt>/*</tt> comment syntax - as long as the line begins with a comment
+opening, it will be parsed by Holly.
+
+Now, when you call <tt>javascript_include_tag 'widget'</tt>, you'll get:
+
+  <script src="/javascripts/prototype.js" type="text/javascript"></script>
+  <script src="/javascripts/effects.js" type="text/javascript"></script>
+  <script src="/javascripts/dragdrop.js" type="text/javascript"></script>
+  <script src="/javascripts/widget.js" type="text/javascript"></script>
+  <script src="/javascripts/widget/item.js" type="text/javascript"></script>
+  <script src="/javascripts/widget/page.js" type="text/javascript"></script>
+  <link href="/stylesheets/widget.css" media="screen" rel="stylesheet" type="text/css" />
+
+If any of these assets have already been rendered to the page, they will be omitted;
+Holly will not allow +javascript_include_tag+ or +stylesheet_link_tag+ to render any
+asset more than once per request.
+
+=== <tt>@require</tt> vs. <tt>@load</tt>
+
+<tt>@require</tt> means that the given file _must_ be loaded before the current file.
+<tt>@load</tt> means that the given file should be loaded after the current file. Files
+are rendered to the page as early as they are <tt>require</tt>d, and as late as they
+are <tt>load</tt>ed.
+
+=== Source resolution
+
+It may help you to know how Holly resolves paths to files you +require+ or +load+. Follow
+these rules and you shouldn't go wrong:
+
+* Remote URLs: these are left unmodified unless they lack a file extension. <tt>.js</tt>
+  is added if the URL is within a JavaScript file, <tt>.css</tt> if within a CSS file.
+  
+* Absolute paths: these are also left untouched unless they lack a file extension. If
+  the path begins with <tt>/javascripts/</tt>, a <tt>.js</tt> extension is added. If
+  the path begins with <tt>/stylesheets/</tt>, a <tt>.css</tt> extension is added.
+  Otherwise, an extension is added based on which type of file is making the +require+ or
+  +load+ call.
+  
+* Relative paths: these are resolved relative to <tt>/javascripts/</tt> or <tt>/stylesheets/</tt>.
+  If the given filename has an extension, that extension is used to determine the directory.
+  For example, if you <tt>@require widget/item.js</tt>, that will always look for
+  <tt>/javascripts/widget/item.js</tt>, whether you call <tt>@require</tt> from a
+  JavaScript or a CSS file. If no extension is present, Holly assumes that you want
+  a <tt>.js</tt> file if the current file is <tt>.js</tt>, and a <tt>.css</tt> if
+  the current file is <tt>.css</tt>.
