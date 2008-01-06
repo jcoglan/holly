@@ -26,8 +26,8 @@ module Holly
   def self.determine_extension(source, context = "js")
     return source.gsub(/^.*?\.([a-z]+)$/i, '\1') if source =~ /\.[a-z]+$/i
     if is_absolute_path?(source)
-      return "js" if source =~ %r{\/#{JS_DIR}\/}
-      return "css" if source =~ %r{\/#{CSS_DIR}\/}
+      return "js" if source =~ %r{^\/#{JS_DIR}\/}
+      return "css" if source =~ %r{^\/#{CSS_DIR}\/}
     end
     return context
   end
