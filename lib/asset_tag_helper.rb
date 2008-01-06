@@ -13,11 +13,10 @@ module ActionView
       alias_method_chain(:stylesheet_link_tag, :holly)
       
       def holly_asset_tags(sources, asset_type)
-        @holly_logger ||= Holly::Logger.new
         sources = sources.map { |s| Holly.resolve_source(s.to_s, asset_type) }
         files = Holly::Asset::Collection.new(*sources).files
-        files.delete_if { |f| @holly_logger.rendered?(f.source) }
-        @holly_logger.log(*files.map { |f| f.source})
+        files.delete_if { |f| request.holly_logger.rendered?(f.source) }
+        request.holly_logger.log(*files.map { |f| f.source})
         files.map { |file|
           __send__("#{file.asset_tag_method}_without_holly", file.source)
         }.join("\n")
