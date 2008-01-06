@@ -23,7 +23,7 @@ module Holly
     end
     
     def read
-      @read ||= is_local? ? File.read(path) : ""
+      @read ||= is_local? ? (File.file?(path) ? File.read(path) : "") : ""
     end
     
     def lines
