@@ -1,4 +1,3 @@
-$holly_test_path = File.dirname(__FILE__) + '/../../../../public'
 require File.dirname(__FILE__) + '/../lib/holly'
 
 namespace :holly do

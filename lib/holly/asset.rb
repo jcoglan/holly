@@ -15,7 +15,7 @@ module Holly
     end
     
     def path
-      is_local? ? "#{PUBLIC_DIR}#{@source}" : @source
+      is_local? ? "#{Holly.public_dir}#{@source}" : @source
     end
     
     def asset_type

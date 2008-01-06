@@ -1,7 +1,6 @@
-$holly_test_path = File.dirname(__FILE__) + '/assets'
-
 require 'test/unit'
 require File.dirname(__FILE__) + '/../lib/holly'
+Holly.public_dir = File.dirname(__FILE__) + '/assets'
 
 class HollyTest < Test::Unit::TestCase
   

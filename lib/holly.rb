@@ -1,8 +1,15 @@
 module Holly
   
-  PUBLIC_DIR = $holly_test_path || RAILS_ROOT.gsub(/\/$/, "") + "/public"
   JS_DIR = "javascripts"
   CSS_DIR = "stylesheets"
+  
+  def self.public_dir
+    @public_dir || RAILS_ROOT.gsub(/\/$/, "") + "/public"
+  end
+  
+  def self.public_dir=(dir)
+    @public_dir = dir
+  end
   
   def self.resolve_source(source, context = "js")
     source = source.to_s
