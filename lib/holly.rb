@@ -32,3 +32,7 @@ module Holly
     return context
   end
 end
+
+require File.dirname(__FILE__) + '/holly/asset'
+require File.dirname(__FILE__) + '/holly/asset/collection'
+require File.dirname(__FILE__) + '/holly/logger'

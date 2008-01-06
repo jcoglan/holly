@@ -1,7 +1,7 @@
 $holly_test_path = File.dirname(__FILE__) + '/assets'
 
 require 'test/unit'
-require File.dirname(__FILE__) + '/../../../../config/environment'
+require File.dirname(__FILE__) + '/../lib/holly'
 
 class HollyTest < Test::Unit::TestCase
   

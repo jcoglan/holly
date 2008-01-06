@@ -31,7 +31,7 @@ module Holly
     end
     
     def lines
-      @lines ||= read.split(/[\r\n]/).delete_if { |s| s.blank? }
+      @lines ||= read.split(/[\r\n]/).delete_if { |s| s.empty? }
     end
     
     def requires
