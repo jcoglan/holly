@@ -12,15 +12,13 @@ module Holly
       def expand!
         n = @sources.size
         while true
-          tmp = []
           # Expand files in reverse order. @load-ed files are not reloaded if tmp
           # already contains them, so files are loaded as late as possible.
           # @require-d files are bumped as early in the list as they are needed.
-          files.reverse.each do |file|
-            tmp = (file.requires + [file.source] +
+          @sources = files.reverse.inject([]) do |tmp, file|
+            (file.requires + [file.source] +
                 file.loads.delete_if { |f| tmp.include?(f) } + tmp).flatten.uniq
           end
-          @sources = tmp
           return if n == @sources.size
           n = @sources.size
         end
