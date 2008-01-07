@@ -6,8 +6,8 @@ module Holly
     
     attr_accessor :source
     
-    def initialize(source)
-      @source = Holly.resolve_source(source)
+    def initialize(source, context = DEFAULT_TYPE)
+      @source = Holly.resolve_source(source, context)
     end
     
     def is_local?
@@ -26,8 +26,12 @@ module Holly
       asset_type == "css" ? :stylesheet_link_tag : :javascript_include_tag
     end
     
+    def exists?
+      !is_local? or File.file?(path)
+    end
+    
     def read
-      @read ||= is_local? ? (File.file?(path) ? File.read(path) : "") : ""
+      @read ||= is_local? ? (exists? ? File.read(path) : "") : ""
     end
     
     def lines
@@ -42,6 +46,10 @@ module Holly
     def loads
       @loads ||= parse(LOAD)
       @loads.dup
+    end
+    
+    def expanded
+      Collection.new(@source)
     end
     
   private

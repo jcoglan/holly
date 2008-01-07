@@ -2,6 +2,7 @@ module Holly
   
   JS_DIR = "javascripts"
   CSS_DIR = "stylesheets"
+  DEFAULT_TYPE = "js"
   
   def self.public_dir
     @public_dir || RAILS_ROOT.gsub(/\/$/, "") + "/public"
@@ -11,7 +12,7 @@ module Holly
     @public_dir = dir
   end
   
-  def self.resolve_source(source, context = "js")
+  def self.resolve_source(source, context = DEFAULT_TYPE)
     source = source.to_s
     source = source.gsub(/\?.*$/, "") unless is_remote_path?(source)
     extension = determine_extension(source, context)
@@ -30,7 +31,7 @@ module Holly
     !!(path =~ /^https?:\/\//i)
   end
   
-  def self.determine_extension(source, context = "js")
+  def self.determine_extension(source, context = DEFAULT_TYPE)
     return source.gsub(/^.*?\.([a-z]+)$/i, '\1') if source =~ /\.[a-z]+$/i
     if is_absolute_path?(source)
       return "js" if source =~ %r{^\/#{JS_DIR}\/}
