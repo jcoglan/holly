@@ -1,8 +1,20 @@
+require 'find'
+
 module Holly
   class Asset
     
     REQUIRE = /^\s*(?:\/\/|\/\*)\s*@require\s+(\S+)/
     LOAD = /^\s*(?:\/\/|\/\*)\s*@load\s+(\S+)/
+    
+    class << self
+      def find_all
+        files, dir = [], Holly.public_dir
+        Find.find(dir) do |path|
+          files << path.gsub(%r{^#{dir}}, "") if path =~ /\.(js|css)$/i
+        end
+        files.sort.map { |f| self.new(f) }
+      end
+    end
     
     attr_accessor :source
     
@@ -50,6 +62,18 @@ module Holly
     
     def expanded
       Collection.new(@source)
+    end
+    
+    def referring_assets
+      self.class.find_all.find_all do |asset|
+        (asset.requires + asset.loads).include?(@source)
+      end
+    end
+    
+    def dependant_assets
+      self.class.find_all.find_all do |asset|
+        asset.expanded.sources.include?(@source)
+      end
     end
     
   private
