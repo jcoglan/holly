@@ -93,3 +93,61 @@ these rules and you shouldn't go wrong:
   JavaScript or a CSS file. If no extension is present, Holly assumes that you want
   a <tt>.js</tt> file if the current file is <tt>.js</tt>, and a <tt>.css</tt> if
   the current file is <tt>.css</tt>.
+
+=== Rake tasks
+
+Holly provides some rake tasks for inspecting the dependencies of the script/css
+files in your project. Just run <tt>rake holly:inspect q=somefile</tt> to see a report
+on its dependencies. For example:
+
+  > rake holly:inspect q=effects.js
+  
+      Requires:
+            /javascripts/prototype.js
+      
+      Loads:
+            (none)
+      
+      Full expansion:
+            /javascripts/prototype.js
+        ->  /javascripts/effects.js
+      
+      Referring files:
+            /javascripts/dragdrop.js
+      
+      Dependants:
+            /javascripts/dragdrop.js
+            /javascripts/widget.js
+  
+  > rake holly:inspect q=widget.js
+  
+      Requires:
+            /javascripts/dragdrop.js
+      
+      Loads:
+            /javascripts/widget/item.js
+            /javascripts/widget/page.js
+        !   /stylesheets/widget.css
+      
+      Full expansion:
+            /javascripts/prototype.js
+            /javascripts/effects.js
+            /javascripts/dragdrop.js
+        ->  /javascripts/widget.js
+            /javascripts/widget/item.js
+            /javascripts/widget/page.js
+        !   /stylesheets/widget.css
+      
+      Referring files:
+            (none)
+      
+      Dependants:
+            (none)
+
++Requires+ and +Loads+ list the files directly referenced by +somefile+. <tt>Full
+expansion</tt> shows the full list of assets loaded by Holly when you include +somefile+
+in one of your pages, in order. <tt>-></tt> indicates +somefile+ in the list. In all
+these lists, a <tt>!</tt> next to a filename indicates that the file is missing.
+<tt>Referring files</tt> lists all the files that contain direct references to
++somefile+, and +Dependants+ lists any files whose full expansion contains references
+to +somefile+.
