@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../lib/holly'
 
 namespace :holly do
-  task :resolve do
+  task :inspect do
     asset = Holly::Asset.new(ENV["q"])
     
     print "\n  Requires:"
