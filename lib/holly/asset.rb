@@ -3,9 +3,6 @@ require 'find'
 module Holly
   class Asset
     
-    REQUIRE = /^\s*(?:\/\/|\/\*)\s*@require\s+(\S+)/
-    LOAD = /^\s*(?:\/\/|\/\*)\s*@load\s+(\S+)/
-    
     class << self
       def find_all
         files, dir = [], Holly.public_dir
@@ -51,12 +48,12 @@ module Holly
     end
     
     def requires
-      @requires ||= parse(REQUIRE)
+      @requires ||= Holly.parse(read, REQUIRE, asset_type)
       @requires.dup
     end
     
     def loads
-      @loads ||= parse(LOAD)
+      @loads ||= Holly.parse(read, LOAD, asset_type)
       @loads.dup
     end
     
@@ -74,15 +71,6 @@ module Holly
       self.class.find_all.find_all do |asset|
         asset.source != @source and asset.expanded.sources.include?(@source)
       end
-    end
-    
-  private
-    
-    def parse(pattern)
-      lines.
-          map { |l| l.match(pattern).to_a[1] }.
-          delete_if { |s| s.to_s == "" }.
-          map { |s| Holly.resolve_source(s, asset_type) }
     end
     
   end

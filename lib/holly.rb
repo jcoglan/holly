@@ -4,6 +4,9 @@ module Holly
   CSS_DIR = "stylesheets"
   DEFAULT_TYPE = "js"
   
+  REQUIRE = /^\s*(?:\/\/|\/\*)\s*@require\s+(\S+)/
+  LOAD = /^\s*(?:\/\/|\/\*)\s*@load\s+(\S+)/
+  
   def self.public_dir
     @public_dir || RAILS_ROOT.gsub(/\/$/, "") + "/public"
   end
@@ -38,6 +41,13 @@ module Holly
       return "css" if source =~ %r{^\/#{CSS_DIR}\/}
     end
     return context
+  end
+  
+  def self.parse(string, pattern, asset_type = DEFAULT_TYPE)
+    string.split(/[\r\n]/).
+        map { |l| l.match(pattern).to_a[1] }.
+        delete_if { |s| s.to_s == "" }.
+        map { |s| resolve_source(s, asset_type) }
   end
   
   def self.get_symbol(source)
