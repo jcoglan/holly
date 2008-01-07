@@ -39,6 +39,12 @@ module Holly
     end
     return context
   end
+  
+  def self.get_symbol(source)
+    asset = Asset.new(source)
+    return "  " if asset.exists?
+    return "! "
+  end
 end
 
 require File.dirname(__FILE__) + '/holly/asset'
