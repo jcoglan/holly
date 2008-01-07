@@ -100,6 +100,11 @@ class HollyTest < Test::Unit::TestCase
       '/stylesheets/gallery/container.css',
       '/stylesheets/gallery/page.css'
     ], Holly::Asset::Collection.new('bar.css').sources
+    
+    order = (1..3).map { |n| "/javascripts/order/#{n}.js" }
+    (1..3).each do |i|
+      assert_equal order, Holly::Asset.new("order/#{i}.js").expanded.sources
+    end
   end
   
   def test_logger
