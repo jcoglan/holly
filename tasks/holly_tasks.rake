@@ -20,15 +20,15 @@ namespace :holly do
     print "\n\n  Referring files:"
     referring = asset.referring_assets
     print "\n        (none)" if referring.empty?
-    referring.each do |asset|
-      print "\n    #{Holly.get_symbol(asset.source)}  #{asset.source}"
+    referring.each do |file|
+      print "\n    #{Holly.get_symbol(file.source)}  #{file.source}"
     end
     
     print "\n\n  Dependants:"
     dependant = asset.dependant_assets
     print "\n        (none)" if dependant.empty?
-    dependant.each do |asset|
-      print "\n    #{Holly.get_symbol(asset.source)}  #{asset.source}"
+    dependant.each do |file|
+      print "\n    #{Holly.get_symbol(file.source)}  #{file.source}"
     end
     
     print "\n"

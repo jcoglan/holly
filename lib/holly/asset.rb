@@ -66,13 +66,13 @@ module Holly
     
     def referring_assets
       self.class.find_all.find_all do |asset|
-        (asset.requires + asset.loads).include?(@source)
+        asset.source != @source and (asset.requires + asset.loads).include?(@source)
       end
     end
     
     def dependant_assets
       self.class.find_all.find_all do |asset|
-        asset.expanded.sources.include?(@source)
+        asset.source != @source and asset.expanded.sources.include?(@source)
       end
     end
     
